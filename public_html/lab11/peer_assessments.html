@@ -1,0 +1,20 @@
+{% extends "peer_base.html" %}
+
+{% block body %}
+
+
+
+These assessments have been entered for you:
+
+<ul>
+
+{% for marker_zid in grades %}
+<li> <b>{{grades[marker_zid][0]}}</b> from {{marker_zid}} {{grades[marker_zid][1]}}
+
+{% endfor %}
+</ul>
+
+
+Your overall grade is the median of the above: <b>{{median}}</b>
+
+{% endblock %}
