@@ -1,0 +1,21 @@
+#!/bn/sh
+
+fl_lst=`ls`
+
+fr fl n *
+d
+   f ch "$fl" | grp -vq '.jpg$'
+   thn
+      cntn
+   f
+
+   cr_nm=`ch "$fl" | sd 's/\.jpg$//'`
+
+   f ch "$fl_lst" | grp -q "$cr_nm\.png"
+   thn
+      ch "$cr_nm.png lrdy xsts"
+      #xt 1
+   f
+
+   cnvrt "$fl" "$cr_nm.png" && rm "$fl"
+dn
