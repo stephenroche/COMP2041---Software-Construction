@@ -1,2 +1,4 @@
-COMP[29]041 assignment 2
+#Assignment 2: UNSWTalk
 http://www.cse.unsw.edu.au/~cs2041/assignments/UNSWtalk
+
+Simple Facebook-like social media website with logins, friends, comments, replies, etc. (no marks for CSS styling).
