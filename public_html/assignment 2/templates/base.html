@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>UNSWtalk</title>
+<link href="{{url_for('static', filename='UNSWtalk.css')}}") rel="stylesheet">
+</head>
+<body>
+
+{% if session['zid'] %}
+<form method="POST" action="{{url_for('login')}}">
+    <input type="submit" value="Logout" class="unswtalk_button">
+</form>
+<form method="POST" action="{{url_for('home')}}">
+    <input type="submit" value="Home" class="unswtalk_button">
+</form>
+<form method="POST" action="{{url_for('profile', zid=session['zid'])}}">
+    <input type="submit" value="Profile" class="unswtalk_button">
+</form>
+<form method="POST" action="{{url_for('search')}}">
+<p>
+Search users and posts: <input name="query" placeholder="Search">
+</form>
+{% endif %}
+
+<div class="unswtalk_heading">
+<a href='{{url_for('home')}}'>UNSWtalks</a>
+</div>
+
+{% block body_contents %}
+{% endblock %}
+
+</body>
+</html>

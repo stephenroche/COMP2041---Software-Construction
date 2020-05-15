@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block body_contents %}
+<h2>Search results - ({{query}})</h2>
+
+<h3>Users</h3>
+{{no_users}}
+{% for hit in user_hits %}
+<div class="unswtalk_user_details">
+<a href='{{url_for('profile', zid=hit)}}'><img class='unswtalk_profile_icon' src="{{url_for('static', filename=(session['dataset'] + hit + '/img.jpg'))}}"></a><b><a href='{{url_for('profile', zid=hit)}}'>{{data[hit]['name']}}</a></b>
+</div><br>
+{% endfor %}
+
+<div class="unswtalk_user_details">
+<h3>Posts</h3>
+{{no_posts}}
+{% for hit in post_hits %}
+<div class="unswtalk_post">
+<a href='{{url_for('profile', zid=hit['from'])}}'><img class='unswtalk_profile_icon' src="{{url_for('static', filename=(session['dataset'] + hit['from'] + '/img.jpg'))}}"></a><b><a href='{{url_for('profile', zid=hit['from'])}}'>{{data[hit['from']]['name']}}</a></b>
+{{hit['message']|repl_tags|safe}}
+<div class="unswtalk_timestamp">{{hit['time']}}</div>
+</div><br>
+{% endfor %}
+</div>
+
+</form>
+{% endblock %}

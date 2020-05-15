@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block body_contents %}
+<div class="unswtalk_user_details">
+
+{{student_details}}
+
+</div>
+
+<form method="POST" action="start">
+    <input type="hidden" name="n" value="7">
+    <input type="submit" value="Next student" class="unswtalk_button">
+</form>
+
+<form method="POST" action="profile/{{ stu_zid }}">
+    <input type="hidden" name="n?" value="7">
+    <input type="submit" value="This student's profile" class="unswtalk_button">
+</form>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block body_contents %}
+
+<div class="unswtalk_user_details">
+<h3>Login</h3>{{ error }}<form method="POST" action="login">
+zID: <input name="zid" >
+<p>
+password: <input type="password" name="password" > 
+<p>
+<input type="submit" value="Let the magic start" >
+</form>
+</div>
+
+{% endblock %}

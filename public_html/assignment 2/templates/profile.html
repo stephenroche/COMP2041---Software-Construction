@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block body_contents %}
+<a href='{{url_for('profile', zid=prof_zid)}}'><img class='unswtalk_profile_picture' src="{{url_for('static', filename=(session['dataset'] + prof_zid + '/img.jpg'))}}"></a>
+<h1>{{data[prof_zid]['name']}}</h1>
+{#
+You are currently logged in as: {{session['zid']}}<br>
+You are using dataset: {{session['dataset']}}<br>
+#}
+
+<div class="unswtalk_user_details">
+<h3>Details</h3>
+{% for info in details %}
+<b>{{info[0]}}</b>  {{info[1]}}
+{% endfor %}
+</div>
+
+<br>
+
+<div class="unswtalk_user_details">
+<h3>Friend list</h3>
+{% for friend in friends %}
+   <a href='{{url_for('profile', zid=friend)}}'><img class='unswtalk_profile_icon' src="{{url_for('static', filename=(session['dataset'] + friend + '/img.jpg'))}}"></a><b><a href='{{url_for('profile', zid=friend)}}'>{{data[friend]['name']}}</a></b>
+{% endfor %}
+</div>
+
+<br>
+
+<div class="unswtalk_user_details">
+<h3>Posts</h3>
+{# make a post #}
+<form method="POST">
+   <input name="post" placeholder="Make a post">
+   <input type="hidden" name="form_action" value="make_post">
+   <input type="hidden" name="parent" value="{{prof_zid}}">
+</form>
+{% for post in posts %}
+   <div class="unswtalk_post">
+   <a href='{{url_for('profile', zid=post['from'])}}'><img class='unswtalk_profile_icon' src="{{url_for('static', filename=(session['dataset'] + post['from'] + '/img.jpg'))}}"></a><b><a href='{{url_for('profile', zid=post['from'])}}'>{{data[post['from']]['name']}}</a></b>
+   {{post['message']|repl_tags|safe}}
+   <div class="unswtalk_timestamp">{{post['time']}}</div>
+   {% if post['from'] == session['zid'] or post['host'] == session['zid'] %}<form method="POST"><input type="submit" value="Delete post" class="unswtalk_button">
+      <input type="hidden" name="form_action" value="del_post">
+      <input type="hidden" name="to_del" value="{{post['host']}}-{{post['num']}}"></form>{% endif %}
+   
+   {% if post['comments'] %}
+      <h4>Comments</h4>
+   {% endif %}
+   {% for comment in post['comments']|sort %}
+      <div class="unswtalk_comment">
+      <a href='{{url_for('profile', zid=post['comments'][comment]['from'])}}'><img class='unswtalk_profile_icon' src="{{url_for('static', filename=(session['dataset'] + post['comments'][comment]['from'] + '/img.jpg'))}}"></a><b><a href='{{url_for('profile', zid=post['comments'][comment]['from'])}}'>{{data[post['comments'][comment]['from']]['name']}}</a></b>
+      {{post['comments'][comment]['message']|repl_tags|safe}}
+      <div class="unswtalk_timestamp">{{post['comments'][comment]['time']}}</div>
+      {% if post['comments'][comment]['from'] == session['zid'] %}<form method="POST"><input type="submit" value="Delete comment" class="unswtalk_button">
+         <input type="hidden" name="form_action" value="del_comment">
+         <input type="hidden" name="to_del" value="{{post['host']}}-{{post['num']}}-{{comment}}"></form>{% endif %}
+      
+      {% if post['comments'][comment]['replies'] %}
+         <h4>Replies</h4>
+      {% endif %}
+      {% for reply in post['comments'][comment]['replies']|sort %}
+         <div class="unswtalk_reply">
+         <a href='{{url_for('profile', zid=post['comments'][comment]['replies'][reply]['from'])}}'><img class='unswtalk_profile_icon' src="{{url_for('static', filename=(session['dataset'] + post['comments'][comment]['replies'][reply]['from'] + '/img.jpg'))}}"></a><b><a href='{{url_for('profile', zid=post['comments'][comment]['replies'][reply]['from'])}}'>{{data[post['comments'][comment]['replies'][reply]['from']]['name']}}</a></b>
+         {{post['comments'][comment]['replies'][reply]['message']|repl_tags|safe}}
+         <div class="unswtalk_timestamp">{{post['comments'][comment]['replies'][reply]['time']}}</div>
+         </div>
+         {% if post['comments'][comment]['replies'][reply]['from'] == session['zid'] %}<form method="POST"><input type="submit" value="Delete reply" class="unswtalk_button">
+            <input type="hidden" name="form_action" value="del_reply">
+            <input type="hidden" name="to_del" value="{{post['host']}}-{{post['num']}}-{{comment}}-{{reply}}"></form>{% endif %}
+      {% endfor %}
+      
+      {# write a reply #}
+      <form method="POST">
+         <input name="reply" placeholder="Write a reply">
+         <input type="hidden" name="form_action" value="make_reply">
+         <input type="hidden" name="parent" value="{{prof_zid}}-{{post['num']}}-{{comment}}">
+     </form>
+      
+      </div>
+   {% endfor %}
+   
+   {# write a comment #}
+   <form method="POST">
+      <input name="comment" placeholder="Write a comment">
+      <input type="hidden" name="form_action" value="make_comment">
+      <input type="hidden" name="parent" value="{{prof_zid}}-{{post['num']}}">
+  </form>
+   
+   </div>
+{% endfor %}
+</div>
+{% endblock %}

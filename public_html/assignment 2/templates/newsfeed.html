@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block body_contents %}
+
+<h1>Newsfeed - <a href='{{url_for('profile', zid=session['zid'])}}'>{{data[session['zid']]['name']}}</a></h1>
+<h3>Your posts, posts from your friends, and mentions</h3>
+
+<div class="unswtalk_user_details">
+{# make a post #}
+<form method="POST">
+   <input name="post" placeholder="Make a post">
+   <input type="hidden" name="form_action" value="make_post">
+   <input type="hidden" name="parent" value="{{session['zid']}}">
+</form>
+{% for post in posts %}
+   <div class="unswtalk_post">
+   <a href='{{url_for('profile', zid=post['from'])}}'><img class='unswtalk_profile_icon' src="{{url_for('static', filename=(session['dataset'] + post['from'] + '/img.jpg'))}}"></a><b><a href='{{url_for('profile', zid=post['from'])}}'>{{data[post['from']]['name']}}</a></b>
+   {{post['message']|repl_tags|safe}}
+   <div class="unswtalk_timestamp">{{post['time']}}</div>
+   {% if post['from'] == session['zid'] %}<form method="POST"><input type="submit" value="Delete post" class="unswtalk_button">
+      <input type="hidden" name="form_action" value="del_post">
+      <input type="hidden" name="to_del" value="{{post['host']}}-{{post['num']}}"></form>{% endif %}
+   {% if post['comments'] %}
+      <h4>Comments</h4>
+   {% endif %}
+   {% for comment in post['comments']|sort %}
+      <div class="unswtalk_comment">
+      <a href='{{url_for('profile', zid=post['comments'][comment]['from'])}}'><img class='unswtalk_profile_icon' src="{{url_for('static', filename=(session['dataset'] + post['comments'][comment]['from'] + '/img.jpg'))}}"></a><b><a href='{{url_for('profile', zid=post['comments'][comment]['from'])}}'>{{data[post['comments'][comment]['from']]['name']}}</a></b>
+      {{post['comments'][comment]['message']|repl_tags|safe}}
+      <div class="unswtalk_timestamp">{{post['comments'][comment]['time']}}</div>
+      {% if post['comments'][comment]['from'] == session['zid'] %}<form method="POST"><input type="submit" value="Delete comment" class="unswtalk_button">
+      <input type="hidden" name="form_action" value="del_comment">
+      <input type="hidden" name="to_del" value="{{post['host']}}-{{post['num']}}-{{comment}}"></form>{% endif %}
+      {% if post['comments'][comment]['replies'] %}
+         <h4>Replies</h4>
+      {% endif %}
+      {% for reply in post['comments'][comment]['replies']|sort %}
+         <div class="unswtalk_reply">
+         <a href='{{url_for('profile', zid=post['comments'][comment]['replies'][reply]['from'])}}'><img class='unswtalk_profile_icon' src="{{url_for('static', filename=(session['dataset'] + post['comments'][comment]['replies'][reply]['from'] + '/img.jpg'))}}"></a><b><a href='{{url_for('profile', zid=post['comments'][comment]['replies'][reply]['from'])}}'>{{data[post['comments'][comment]['replies'][reply]['from']]['name']}}</a></b>
+         {{post['comments'][comment]['replies'][reply]['message']|repl_tags|safe}}
+         <div class="unswtalk_timestamp">{{post['comments'][comment]['replies'][reply]['time']}}</div>
+         {% if post['comments'][comment]['replies'][reply]['from'] == session['zid'] %}<form method="POST"><input type="submit" value="Delete reply" class="unswtalk_button">
+            <input type="hidden" name="form_action" value="del_reply">
+            <input type="hidden" name="to_del" value="{{post['host']}}-{{post['num']}}-{{comment}}-{{reply}}"></form>{% endif %}
+         </div>         
+      {% endfor %}
+      
+      {# write a reply #}
+      <form method="POST">
+         <input name="reply" placeholder="Write a reply">
+         <input type="hidden" name="form_action" value="make_reply">
+         <input type="hidden" name="parent" value="{{post['host']}}-{{post['num']}}-{{comment}}">
+     </form>
+      
+      </div>
+   {% endfor %}
+   
+   {# write a comment #}
+   <form method="POST">
+      <input name="comment" placeholder="Write a comment">
+      <input type="hidden" name="form_action" value="make_comment">
+      <input type="hidden" name="parent" value="{{post['host']}}-{{post['num']}}">
+  </form>
+   
+   </div>
+{% endfor %}
+</div>
+{% endblock %}

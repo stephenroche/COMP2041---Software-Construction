@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Init script moves datasets to the static/ folder
+
+if [ ! -d static ]
+then
+   mkdir static
+fi
+
+rm -rf static/dataset-*
+mv dataset-* static/
